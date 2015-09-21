@@ -95,130 +95,134 @@
                     if (duration == '90days')
                         diff = 7884000000;
                     then.setTime(now.getTime() - diff);
+                    var codigoANombre = {
+                        caudal: "Caudal",
+                        humedad_ambiente: "Humedad del Ambiente",
+                        humedad_suelo: "Humedad del suelo",
+                        luz: "Porcentaje de luminosidad",
+                        temperatura: "Temperatura ambiente",
+                        status_bomba: "Estado de Bomba",
+                        status_calentador: "Estado del Calentador",
+                        status_ventilador: "Estado del Ventilador",
+                        modo_bomba: "Modo de trabajo de la Bomba",
+                        modo_calentador: "Modo de trabajo del Calentador",
+                        modo_ventilador: "Modo de trabajo del Ventilador"
+                    };
                     if (updated.getTime() > then.getTime()) {
                         if (datastreamIds && datastreamIds != '' && datastreamIds.indexOf(datastream.id) >= 0) {
-                            xively.datastream.history(feedId, datastream.id, {duration: duration, interval: interval, limit: 1000}, function (datastreamData) {
+                            if (datastream.id != "modo_bomba" && datastream.id != "modo_calentador" && datastream.id != "modo_ventilador") {
+                                xively.datastream.history(feedId, datastream.id, {duration: duration, interval: interval, limit: 1000}, function (datastreamData) {
 
-                                var series = [];
-                                var points = [];
+                                    var series = [];
+                                    var points = [];
 
-                                // Create Datastream UI
-                                $('.datastream-' + datastream.id).empty();
-                                $('.datastream-' + datastream.id).remove();
-                                $('#feed-' + feedId + ' .datastream.hidden').clone().appendTo('#feed-' + feedId + ' .datastreams').addClass('datastream-' + datastream.id).removeClass('hidden');
+                                    // Create Datastream UI
+                                    $('.datastream-' + datastream.id).empty();
+                                    $('.datastream-' + datastream.id).remove();
+                                    $('#feed-' + feedId + ' .datastream.hidden').clone().appendTo('#feed-' + feedId + ' .datastreams').addClass('datastream-' + datastream.id).removeClass('hidden');
 
-                                // Check for Datastream Tags
-                                var tagsHtml = '';
-                                if (datastreamData.tags) {
-                                    tagsHtml = '<div style="font-size: 14px;"><span class="radius secondary label">' + datastreamData.tags.join('</span> <span class="radius secondary label">') + '</span></div>';
-                                } else {
-                                    tagsHtml = '';
-                                }
+                                    // Check for Datastream Tags
+                                    var tagsHtml = '';
+                                    if (datastreamData.tags) {
+                                        tagsHtml = '<div style="font-size: 14px;"><span class="radius secondary label">' + datastreamData.tags.join('</span> <span class="radius secondary label">') + '</span></div>';
+                                    } else {
+                                        tagsHtml = '';
+                                    }
 
-                                // Fill Datastream UI with Data
-                                var codigoANombre = {
-                                    caudal: "Caudal",
-                                    humedad_ambiente: "Humedad del Ambiente",
-                                    humedad_suelo: "Humedad del suelo",
-                                    luz: "Porcentaje de luminosidad",
-                                    temperatura: "Temperatura ambiente",
-                                    status_bomba: "Estado de Bomba",
-                                    status_calentador: "Estado del Calentador",
-                                    status_ventilador: "Estado del Ventilador",
-                                    modo_bomba: "Modo de trabajo de la Bomba",
-                                    modo_calentador: "Modo de trabajo del Calentador",
-                                    modo_ventilador: "Modo de trabajo del Ventilador"
-                                };
+                                    // Fill Datastream UI with Data
 
 
-                                $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-name').html(codigoANombre[datastream.id]);
-                                $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value);
 
-                                // Include Datastream Unit (If Available)
-                                if (datastream.unit) {
-                                    if (datastream.unit.symbol) {
-                                        $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html("<small>" + datastream.current_value + datastream.unit.symbol + "</small>");
+                                    $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-name').html(codigoANombre[datastream.id]);
+                                    $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value);
+
+                                    // Include Datastream Unit (If Available)
+                                    if (datastream.unit) {
+                                        if (datastream.unit.symbol) {
+                                            $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html("<small>" + datastream.current_value + datastream.unit.symbol + "</small>");
+                                        } else {
+                                            $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value);
+                                        }
                                     } else {
                                         $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value);
                                     }
-                                } else {
-                                    $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .datastream-value').html(datastream.current_value);
-                                }
-                                $('.datastream-' + datastream.id).removeClass('hidden');
+                                    $('.datastream-' + datastream.id).removeClass('hidden');
 
-                                // Historical Datapoints
-                                if (datastreamData.datapoints) {
+                                    // Historical Datapoints
+                                    if (datastreamData.datapoints) {
 
-                                    // Add Each Datapoint to Array
-                                    datastreamData.datapoints.forEach(function (datapoint) {
-                                        points.push({x: new Date(datapoint.at).getTime() / 1000.0, y: parseFloat(datapoint.value)});
-                                    });
+                                        // Add Each Datapoint to Array
+                                        datastreamData.datapoints.forEach(function (datapoint) {
+                                            points.push({x: new Date(datapoint.at).getTime() / 1000.0, y: parseFloat(datapoint.value)});
+                                        });
 
-                                    // Add Datapoints Array to Graph Series Array
-                                    series.push({
-                                        name: datastream.id,
-                                        data: points,
-                                        color: '#' + dataColor
-                                    });
+                                        // Add Datapoints Array to Graph Series Array
+                                        series.push({
+                                            name: datastream.id,
+                                            data: points,
+                                            color: '#' + dataColor
+                                        });
 
-                                    // Initialize Graph DOM Element
-                                    $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .graph').attr('id', 'graph-' + feedId + '-' + datastream.id);
+                                        // Initialize Graph DOM Element
+                                        $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .graph').attr('id', 'graph-' + feedId + '-' + datastream.id);
 
-                                    // Build Graph
-                                    var graph = new Rickshaw.Graph({
-                                        element: document.querySelector('#graph-' + feedId + '-' + datastream.id),
-                                        width: 600,
-                                        height: 200,
-                                        renderer: 'line',
-                                        min: parseFloat(datastream.min_value) - .25 * (parseFloat(datastream.max_value) - parseFloat(datastream.min_value)),
-                                        max: parseFloat(datastream.max_value) + .25 * (parseFloat(datastream.max_value) - parseFloat(datastream.min_value)),
-                                        padding: {
-                                            top: 0.02,
-                                            right: 0.02,
-                                            bottom: 0.02,
-                                            left: 0.02
-                                        },
-                                        series: series
-                                    });
+                                        // Build Graph
+                                        var graph = new Rickshaw.Graph({
+                                            element: document.querySelector('#graph-' + feedId + '-' + datastream.id),
+                                            width: 600,
+                                            height: 200,
+                                            renderer: 'line',
+                                            min: parseFloat(datastream.min_value) - .25 * (parseFloat(datastream.max_value) - parseFloat(datastream.min_value)),
+                                            max: parseFloat(datastream.max_value) + .25 * (parseFloat(datastream.max_value) - parseFloat(datastream.min_value)),
+                                            padding: {
+                                                top: 0.02,
+                                                right: 0.02,
+                                                bottom: 0.02,
+                                                left: 0.02
+                                            },
+                                            series: series
+                                        });
 
-                                    graph.render();
+                                        graph.render();
 
-                                    var ticksTreatment = 'glow';
+                                        var ticksTreatment = 'glow';
 
-                                    // Define and Render X Axis (Time Values)
-                                    var xAxis = new Rickshaw.Graph.Axis.Time({
-                                        graph: graph,
-                                        ticksTreatment: ticksTreatment
-                                    });
-                                    xAxis.render();
+                                        // Define and Render X Axis (Time Values)
+                                        var xAxis = new Rickshaw.Graph.Axis.Time({
+                                            graph: graph,
+                                            ticksTreatment: ticksTreatment
+                                        });
+                                        xAxis.render();
 
-                                    // Define and Render Y Axis (Datastream Values)
-                                    var yAxis = new Rickshaw.Graph.Axis.Y({
-                                        graph: graph,
-                                        tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-                                        ticksTreatment: ticksTreatment
-                                    });
-                                    yAxis.render();
+                                        // Define and Render Y Axis (Datastream Values)
+                                        var yAxis = new Rickshaw.Graph.Axis.Y({
+                                            graph: graph,
+                                            tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+                                            ticksTreatment: ticksTreatment
+                                        });
+                                        yAxis.render();
 
-                                    // Enable Datapoint Hover Values
-                                    var hoverDetail = new Rickshaw.Graph.HoverDetail({
-                                        graph: graph,
-                                        formatter: function (series, x, y) {
-                                            var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + ' padding: 4px;"></span>';
-                                            var content = swatch + "&nbsp;&nbsp;" + parseFloat(y) + '&nbsp;&nbsp;<br>';
-                                            return content;
-                                        }
-                                    });
+                                        // Enable Datapoint Hover Values
+                                        var hoverDetail = new Rickshaw.Graph.HoverDetail({
+                                            graph: graph,
+                                            formatter: function (series, x, y) {
+                                                var swatch = '<span class="detail_swatch" style="background-color: ' + series.color + ' padding: 4px;"></span>';
+                                                var content = swatch + "&nbsp;&nbsp;" + parseFloat(y) + '&nbsp;&nbsp;<br>';
+                                                return content;
+                                            }
+                                        });
 
-                                    $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .slider').prop('id', 'slider-' + feedId + '-' + datastream.id);
-                                    var slider = new Rickshaw.Graph.RangeSlider({
-                                        graph: graph,
-                                        element: $('#slider-' + feedId + '-' + datastream.id)
-                                    });
-                                } else {
-                                    $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .graphWrapper').addClass('hidden');
-                                }
-                            });
+                                        $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .slider').prop('id', 'slider-' + feedId + '-' + datastream.id);
+                                        var slider = new Rickshaw.Graph.RangeSlider({
+                                            graph: graph,
+                                            element: $('#slider-' + feedId + '-' + datastream.id)
+                                        });
+                                    } else {
+                                        $('#feed-' + feedId + ' .datastreams .datastream-' + datastream.id + ' .graphWrapper').addClass('hidden');
+                                    }
+
+                                });
+                            }
                         } else {
                             console.log('Datastream not requested! (' + datastream.id + ')');
                         }
