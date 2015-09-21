@@ -63,7 +63,7 @@ and open the template in the editor.
             <div class="row">
                 <div class="large-12 columns">
                     <h1 style="color: #FFF; text-shadow: 0px 1px 0px #000;">
-                        InBernardo! (    En breve un codigo mejor :)    )
+                        INVERNATIC!
                     </h1>
                 </div>
             </div>
@@ -106,10 +106,9 @@ and open the template in the editor.
                 <input style="text-align:center;" class="form-control" id="status_ventilador">
             </div>
         </div>
-
         <div class="row"><br>
             <h2 align="center">Panel de Control<br>
-                <small><i>Puede hacer click sobre el botón correspondiente para cambiar los modos</i></small></h2>
+                <small><i>Puede hacer click sobre el botón correspondiente para cambiar los modos</i><br><small>Ten en cuenta que puedes hacer un cambio por cada segundo. La última orden es la que contará...</small></small></h2>
             <h2 align="center"></h2>
         </div>
         <div class="row">
@@ -138,50 +137,6 @@ and open the template in the editor.
                 <small><i>Aquí puede observar cómo se ha ido desarrollando el control automático en el invernadero</i></small></h2>
             <h2 align="center"></h2>
         </div>
-        <!--
-        <div class="row">
-            <div id="historico_caudal_div" class="form-group col-xs-6 col-md-3">
-                <label for="historico_caudal">Caudal <small>(litros/min)</small></label>
-                <div id="historico_caudal">
-                </div>
-            </div>
-            <div id="historico_humedad_ambiente_div" class="form-group col-xs-6 col-md-3">
-                <label for="historico_humedad_ambiente">Humedad del Ambiente <small>(%)</small></label>
-                <div id="historico_humedad_ambiente">
-                </div>
-            </div>
-            <div id="historico_humedad_suelo_div" class="form-group col-xs-6 col-md-3">
-                <label for="historico_humedad_suelo">Humedad del Suelo <small>(%)</small></label>
-                <div id="historico_humedad_suelo">
-                </div>
-            </div>
-            <div id="historico_luz_div" class="form-group col-xs-6 col-md-3">
-                <label for="historico_luz">Luminosidad <small>(luxes)</small></label>
-                <div id="historico_luz">
-                </div>
-            </div>
-            <div id="historico_temperatura_div" class="form-group col-xs-6 col-md-3">
-                <label for="historico_temperatura">Temperatura <small>(°C)</small></label>
-                <div id="historico_temperatura">
-                </div>
-            </div>
-            <div id="historico_status_bomba_div" class="form-group col-xs-6 col-md-3">
-                <label for="historico_status_bomba">Estado de la Bomba <small>(On/Off)</small></label>
-                <div id="historico_status_bomba">
-                </div>
-            </div>
-            <div id="historico_status_calentador_div" class="form-group col-xs-6 col-md-3">
-                <label for="historico_status_calentador">Estado del Calentador <small>(On/Off)</small></label>
-                <div id="historico_status_calentador">
-                </div>
-            </div>
-            <div id="historico_status_ventilador_div" class="form-group col-xs-6 col-md-3">
-                <label for="historico_status_ventilador">Estado del Ventilador <small>(On/Off)</small></label>
-                <div id="historico_status_ventilador">
-                </div>
-            </div>
-        </div>
-        -->
         <!-- Page Content -->
         <div class="hidden" id="xivelyContent" style="position: relative;">
             <a href="https://github.com/xively/channel-viz" class="hide-for-medium hide-for-small"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
@@ -462,12 +417,12 @@ and open the template in the editor.
                 <div class="row">
                     <div class="large-8 columns" style="color: rgb(81, 98, 111); padding-top: 10px; padding-bottom: 10px;">
                         <small>
-                            Este sitio fue desarrollado por los integrantes del Grupo para la ETyC InBernardo.
+                            Este sitio fue desarrollado por los integrantes del Grupo Invernatic.
                         </small>
                     </div>
                     <div class="large-4 columns" style="color: rgb(81, 98, 111); padding-top: 10px; padding-bottom: 10px;">
                         <small>
-                            <a style="color: rgb(81, 98, 111);" href="https://github.com/xively/channel-viz/blob/master/LICENSE.md">Esta biblioteca es de Còdigo Abierto (BSD-3 Clause).</a>
+                            <a style="color: rgb(81, 98, 111);" href="https://github.com/xively/channel-viz/blob/master/LICENSE.md">Esta biblioteca es de Código Abierto (BSD-3 Clause).</a>
                         </small>
                     </div>
                 </div>
@@ -489,119 +444,106 @@ and open the template in the editor.
         <script src="js/follows.js"></script>
 
         <script>
-            var websocketMonitoreo;
+            var websocket;
             var wsUri = "ws://api.xively.com:8080";
-            var ancho = 250;
-            var alto = 250;
-            var divs = {
-                caudal: "Caudal",
-                humedad_ambiente: "Humedad del Ambiente",
-                humedad_suelo: "Humedad del suelo",
-                luz: "Porcentaje de luminosidad",
-                temperatura: "Temperatura ambiente",
-                status_bomba: "Estado de Bomba",
-                status_calentador: "Estado del Calentador",
-                status_ventilador: "Estado del Ventilador"
-            };
-            var svgs = {};
-            var jsonMonitoreo = {
-                "method": "get",
-                "resource": "/feeds/1439966730",
-                "params": {},
-                "headers": {"X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"},
-                "token": "0x12345"
-            };
-            var jsonSuscripcion = {
+            var headerSubscribe = {
                 "method": "subscribe",
                 "resource": "/feeds/1439966730",
                 "headers": {"X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"},
-                "token": "0x12345"
+                "token": "subscribe"
             };
+            var headerFirstTime = {
+                "method": "get",
+                "resource": "/feeds/1439966730",
+                "headers": {"X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"},
+                "token": "primeravez"
+            };
+            var llamadaAjax = null;
+            var botonLlamado = null;
+            var jsonControles = {};
+            var controles = {
+                modo_bomba: 0,
+                modo_calentador: 1,
+                modo_ventilador: 3
+            };
+            var modos = {
+                auto: 0,
+                on: 1,
+                off: 3
+            };
+            var valor;
+            for (var control in controles) {
+                for (var modo in modos) {
+                    jsonControles[control + "_" + modo] = {
+                        url: "https://api.xively.com/v2/feeds/1439966730.json",
+                        method: "put",
+                        headers: {"X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"},
+                        token: control + "_" + modo,
+                        data: JSON.stringify({
+                            "version": "1.0.0",
+                            "datastreams": [{
+                                    "id": control,
+                                    "current_value": modos[modo]
+                                }
+                            ]
+                        })
+                    };
+                    $("#" + control + "_" + modo).on('click', function () {
+                        if (llamadaAjax) {
+                            clearTimeout(llamadaAjax);
+                        }
+                        botonLlamado = this.id;
+                        llamadaAjax = setTimeout(function () {
+                            $.ajax(jsonControles[botonLlamado]);
+                            llamadaAjax = null;
+                            var botones = ["modo_bomba_auto",
+                                "modo_bomba_on",
+                                "modo_bomba_off",
+                                "modo_calentador_auto",
+                                "modo_calentador_on",
+                                "modo_calentador_off",
+                                "modo_ventilador_auto",
+                                "modo_ventilador_on",
+                                "modo_ventilador_off"];
+                            var colores = ["btn-primary", "btn-success", "btn-danger"];
+                            var pos = botones.indexOf(botonLlamado);
+                            if (pos < 3) {
+                                $("#" + botones[0]).removeClass("btn-primary btn-default").addClass("btn-default");
+                                $("#" + botones[1]).removeClass("btn-success btn-default").addClass("btn-default");
+                                $("#" + botones[2]).removeClass("btn-danger btn-default").addClass("btn-default");
+                            } else if (pos < 6) {
+                                $("#" + botones[3]).removeClass("btn-primary btn-default").addClass("btn-default");
+                                $("#" + botones[4]).removeClass("btn-success btn-default").addClass("btn-default");
+                                $("#" + botones[5]).removeClass("btn-danger btn-default").addClass("btn-default");
+                            } else {
+                                $("#" + botones[6]).removeClass("btn-primary btn-default").addClass("btn-default");
+                                $("#" + botones[7]).removeClass("btn-success btn-default").addClass("btn-default");
+                                $("#" + botones[8]).removeClass("btn-danger btn-default").addClass("btn-default");
+                            }
+                            $("#" + botones[pos]).addClass(colores[pos % 3]);
+                        }, 1000);
+                    });
+                }
+            }
             function init()
             {
-                // Para el panel de monitoreo
-                websocketMonitoreo = new WebSocket(wsUri);
-                websocketMonitoreo.onopen = function (evt) {
-                    onOpen(evt)
+                websocket = new WebSocket(wsUri);
+                websocket.onopen = function (evt) {
+                    onOpen(evt);
                 };
-                websocketMonitoreo.onclose = function (evt) {
-                    onClose(evt)
+                websocket.onclose = function (evt) {
+                    onClose(evt);
                 };
-                websocketMonitoreo.onmessage = function (evt) {
-                    onMessage(evt)
+                websocket.onmessage = function (evt) {
+                    onMessage(evt);
                 };
-                websocketMonitoreo.onerror = function (evt) {
-                    onError(evt)
+                websocket.onerror = function (evt) {
+                    onError(evt);
                 };
-                // Establecemos las llamadas AJAX necesarias para los objetos del HTML
-                // boton: bomba, calentador, ventilador
-                // modo: auto, on, off
-                botones = ["_bomba", "_calentador", "_ventilador"];
-                modos = {
-                    "_auto": 0,
-                    "_on": 1,
-                    "_off": 3
-                };
-                var jsonDeBotonesAjax = {};
-                var id, value;
-                for (var i in botones) {
-                    for (var modo in modos) {
-                        id = "modo" + botones[i];
-                        value = modos[modo];
-                        jsonDeBotonesAjax[id + modo] = {
-                            url: "https://api.xively.com/v2/feeds/1439966730.json",
-                            method: "PUT",
-                            //dataType: 'json',
-                            headers: {
-                                "X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"
-                            },
-                            data: {
-                                version: "1.0.0",
-                                datastreams: [
-                                    {
-                                        "id": id,
-                                        "current_value": value
-                                    }
-                                ]
-                            },
-                            success: function (evt, status) {
-                                alert("Holis");
-                            }
-                        };
-                        $("#modo" + botones[i] + modo).on('click', function () {
-                            if (jsonDeBotonesAjax[this.id] && jsonDeBotonesAjax[this.id].data.datastreams) {
-                                id = jsonDeBotonesAjax[this.id].data.datastreams[0].id;
-                                value = jsonDeBotonesAjax[this.id].data.datastreams[0].current_value;
-                                if (id == "modo_bomba" || id == "modo_calentador" || id == "modo_ventilador") {
-                                    switch (parseInt(value)) {
-                                        case 0:
-                                            $("#" + id + "_auto").removeClass("btn-default btn-primary").addClass("btn-primary")
-                                            $("#" + id + "_on").removeClass("btn-success btn-default").addClass("btn-default")
-                                            $("#" + id + "_off").removeClass("btn-danger btn-default").addClass("btn-default")
-                                            break;
-                                        case 1:
-                                            $("#" + id + "_auto").removeClass("btn-primary btn-default").addClass("btn-default")
-                                            $("#" + id + "_on").removeClass("btn-default btn-success").addClass("btn-success")
-                                            $("#" + id + "_off").removeClass("btn-danger btn-default").addClass("btn-default")
-                                            break;
-                                        default:
-                                            $("#" + id + "_auto").removeClass("btn-primary btn-default").addClass("btn-default")
-                                            $("#" + id + "_on").removeClass("btn-success btn-default").addClass("btn-default")
-                                            $("#" + id + "_off").removeClass("btn-default btn-danger").addClass("btn-danger")
-                                    }
-                                }
-                                jsonDeBotonesAjax[this.id].data = JSON.stringify(jsonDeBotonesAjax[this.id].data);
-                                $.ajax(jsonDeBotonesAjax[this.id]);
-                            }
-                        });
-                    }
-                }
             }
             function onOpen(evt)
             {
-                // En primera instancia traemos todos los datos desde el Xively
-                websocketMonitoreo.send(JSON.stringify(jsonMonitoreo));
-                setInterval(getValues, 5000);
+                websocket.send(JSON.stringify(headerSubscribe));
             }
 
             function onClose(evt)
@@ -612,20 +554,31 @@ and open the template in the editor.
             function onMessage(evt)
             {
                 var resp = JSON.parse(evt.data);
-                // El mensaje se encarga de despachar los datos a los medidores
                 if (resp.status == 200) {
+                    switch (resp.token) {
+                        case "subscribe":
+                            alert("Conectado al servidor!")
+                            websocket.send(JSON.stringify(headerFirstTime));
+                            break;
+                        case "primeravez":
+                            lista = resp.body.datastreams;
+                            for (var i in lista) {
+                                setValue(lista[i].id, lista[i].current_value);
+                            }
+                            break;
+                        default:
+                            console.log(resp);
+                    }
+                } // Se actualizan los textbox
+                else if (resp.token == "subscribe") {
                     lista = resp.body.datastreams;
                     for (var i in lista) {
                         setValue(lista[i].id, lista[i].current_value);
                     }
-                } else {
-                    alert('Hay problemas con la comunicación con el servidor. Aguarde unos momentos...');
-                    //websocketMonitoreo.close();
                 }
-            }
-
-            function getValues() {
-                websocketMonitoreo.send(JSON.stringify(jsonMonitoreo));
+                else {
+                    alert("Hay inconvenientes para traer los datos. Revise su conexion a Internet...");
+                }
             }
 
             function onError(evt)
@@ -650,7 +603,7 @@ and open the template in the editor.
                     $("#" + id).val(value);
                 }
                 if (id == "status_bomba" || id == "status_calentador" || id == "status_ventilador") {
-                    if (value) {
+                    if (value == '1') {
                         $("#" + id).val("Encendido");
                     } else {
                         $("#" + id).val("Apagado");
@@ -675,6 +628,7 @@ and open the template in the editor.
                     }
                 }
             }
+
             window.addEventListener("load", init, false);
         </script>
     </body>
