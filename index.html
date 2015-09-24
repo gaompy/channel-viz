@@ -493,7 +493,7 @@ and open the template in the editor.
                     };
                 }
             }
-            
+
             $("#modo_bomba_on").on('click', function () {
                 if (timeoutLlamadaAjax["modo_bomba"]) {
                     clearTimeout(timeoutLlamadaAjax["modo_bomba"]);
@@ -575,7 +575,7 @@ and open the template in the editor.
                     timeoutLlamadaAjax["modo_ventilador"] = null;
                 }, 1000);
             });
-            
+
             function init()
             {
                 websocket = new WebSocket(wsUri);
