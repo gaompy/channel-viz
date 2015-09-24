@@ -559,7 +559,7 @@ and open the template in the editor.
                 if (resp.status == 200) {
                     switch (resp.token) {
                         case "subscribe":
-                            alert("Conectado al servidor!")
+                            //alert("Conectado al servidor!")
                             websocket.send(JSON.stringify(headerFirstTime));
                             break;
                         case "primeravez":
