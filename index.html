@@ -458,8 +458,11 @@ and open the template in the editor.
                 "headers": {"X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"},
                 "token": "primeravez"
             };
-            var llamadaAjax = null;
-            var botonLlamado = null;
+            var timeoutLlamadaAjax = {
+                modo_bomba: null,
+                modo_calentador: null,
+                modo_ventilador: null
+            };
             var jsonControles = {};
             var controles = {
                 modo_bomba: 0,
@@ -488,45 +491,91 @@ and open the template in the editor.
                             ]
                         })
                     };
-                    $("#" + control + "_" + modo).on('click', function () {
-                        if (llamadaAjax) {
-                            clearTimeout(llamadaAjax);
-                        }
-                        botonLlamado = this.id;
-                        llamadaAjax = setTimeout(function () {
-                            $.ajax(jsonControles[botonLlamado]);
-                            llamadaAjax = null;
-                            var botones = ["modo_bomba_auto",
-                                "modo_bomba_on",
-                                "modo_bomba_off",
-                                "modo_calentador_auto",
-                                "modo_calentador_on",
-                                "modo_calentador_off",
-                                "modo_ventilador_auto",
-                                "modo_ventilador_on",
-                                "modo_ventilador_off"];
-                                /*
-                            var colores = ["btn-primary", "btn-success", "btn-danger"];
-                            var pos = botones.indexOf(botonLlamado);
-                            if (pos < 3) {
-                                $("#" + botones[0]).removeClass("btn-primary btn-default").addClass("btn-default");
-                                $("#" + botones[1]).removeClass("btn-success btn-default").addClass("btn-default");
-                                $("#" + botones[2]).removeClass("btn-danger btn-default").addClass("btn-default");
-                            } else if (pos < 6) {
-                                $("#" + botones[3]).removeClass("btn-primary btn-default").addClass("btn-default");
-                                $("#" + botones[4]).removeClass("btn-success btn-default").addClass("btn-default");
-                                $("#" + botones[5]).removeClass("btn-danger btn-default").addClass("btn-default");
-                            } else {
-                                $("#" + botones[6]).removeClass("btn-primary btn-default").addClass("btn-default");
-                                $("#" + botones[7]).removeClass("btn-success btn-default").addClass("btn-default");
-                                $("#" + botones[8]).removeClass("btn-danger btn-default").addClass("btn-default");
-                            }
-                            $("#" + botones[pos]).addClass(colores[pos % 3]);
-                            */
-                        }, 1000);
-                    });
                 }
             }
+            
+            $("#modo_bomba_on").on('click', function () {
+                if (timeoutLlamadaAjax["modo_bomba"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_bomba"]);
+                }
+                timeoutLlamadaAjax["modo_bomba"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_bomba_on"]);
+                    timeoutLlamadaAjax["modo_bomba"] = null;
+                }, 1000);
+            });
+            $("#modo_bomba_off").on('click', function () {
+                if (timeoutLlamadaAjax["modo_bomba"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_bomba"]);
+                }
+                timeoutLlamadaAjax["modo_bomba"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_bomba_off"]);
+                    timeoutLlamadaAjax["modo_bomba"] = null;
+                }, 1000);
+            });
+            $("#modo_bomba_auto").on('click', function () {
+                if (timeoutLlamadaAjax["modo_bomba"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_bomba"]);
+                }
+                timeoutLlamadaAjax["modo_bomba"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_bomba_auto"]);
+                    timeoutLlamadaAjax["modo_bomba"] = null;
+                }, 1000);
+            });
+            $("#modo_calentador_on").on('click', function () {
+                if (timeoutLlamadaAjax["modo_calentador"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_calentador"]);
+                }
+                timeoutLlamadaAjax["modo_calentador"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_calentador_on"]);
+                    timeoutLlamadaAjax["modo_calentador"] = null;
+                }, 1000);
+            });
+            $("#modo_calentador_off").on('click', function () {
+                if (timeoutLlamadaAjax["modo_calentador"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_calentador"]);
+                }
+                timeoutLlamadaAjax["modo_calentador"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_calentador_off"]);
+                    timeoutLlamadaAjax["modo_calentador"] = null;
+                }, 1000);
+            });
+            $("#modo_calentador_auto").on('click', function () {
+                if (timeoutLlamadaAjax["modo_calentador"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_calentador"]);
+                }
+                timeoutLlamadaAjax["modo_calentador"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_calentador_auto"]);
+                    timeoutLlamadaAjax["modo_calentador"] = null;
+                }, 1000);
+            });
+            $("#modo_ventilador_on").on('click', function () {
+                if (timeoutLlamadaAjax["modo_ventilador"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_ventilador"]);
+                }
+                timeoutLlamadaAjax["modo_ventilador"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_ventilador_on"]);
+                    timeoutLlamadaAjax["modo_ventilador"] = null;
+                }, 1000);
+            });
+            $("#modo_ventilador_off").on('click', function () {
+                if (timeoutLlamadaAjax["modo_ventilador"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_ventilador"]);
+                }
+                timeoutLlamadaAjax["modo_ventilador"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_ventilador_off"]);
+                    timeoutLlamadaAjax["modo_ventilador"] = null;
+                }, 1000);
+            });
+            $("#modo_ventilador_auto").on('click', function () {
+                if (timeoutLlamadaAjax["modo_ventilador"]) {
+                    clearTimeout(timeoutLlamadaAjax["modo_ventilador"]);
+                }
+                timeoutLlamadaAjax["modo_ventilador"] = setTimeout(function () {
+                    $.ajax(jsonControles["modo_ventilador_auto"]);
+                    timeoutLlamadaAjax["modo_ventilador"] = null;
+                }, 1000);
+            });
+            
             function init()
             {
                 websocket = new WebSocket(wsUri);
