@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Proyecto de la ETyC</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="css/foundation.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/rickshaw.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+        <style type="text/css">
+            body, html {
+                max-width: 100%;
+                min-height: 100%;
+                overflow-x: hidden;
+                background: #FAFAFA center center no-repeat;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            #xivelyContent {
+                background: #fff;
+                box-shadow: inset 0px 0px 100px #f0f0f0;
+            }
+
+            .graphWrapper {
+                -moz-box-shadow:inset 0px 0px 50px 25px #ffffff;
+                -webkit-box-shadow:inset 0px 0px 50px 25px #ffffff;
+                box-shadow:inset 0px 0px 50px 25px #ffffff;
+                background-image: linear-gradient(bottom, rgb(255,255,255) 30%, rgb(245,245,245) 97%);
+                background-image: -o-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(245,245,245) 97%);
+                background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(245,245,245) 97%);
+                background-image: -webkit-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(245,245,245) 97%);
+                background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(245,245,245) 97%);
+                background-image: -webkit-gradient(
+                    linear,
+                    left bottom,
+                    left top,
+                    color-stop(0.3, rgb(255,255,255)),
+                    color-stop(0.97, rgb(245,245,245))
+                    );
+            }
+
+
+        </style>
+        <script src="js/bootstrap.js" type="text/javascript"></script>
+        <script src="js/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="js/d3.v3.min.js" type="text/javascript"></script>
+        <script src="js/xivelyjs-1.0.4.min.js" type="text/javascript"></script>
+        <script src="js/rickshaw.min.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div style="background: #101C24;">
+            <div class="row">
+                <div class="large-12 columns">
+                    <h1 style="color: #FFF; text-shadow: 0px 1px 0px #000;">
+                        INVERNATIC!
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="row"><br>
+            <h2 align="center">Panel de Monitoreo<br>
+                <small><i>En esta sección puede observar los valores instantáneos de los medidores en el Invernadero</i></small></h2>
+        </div>
+       
+        <div class="row">
+            <div id="caudal_div" class="form-group col-xs-6 col-md-3">
+                <label for="caudal">Caudal <small>(litros/min)</small></label>
+                <input style="text-align:center;" class="form-control" id="caudal">
+            </div>
+            <div id="humedad_ambiente_div" class="form-group col-xs-6 col-md-3">
+                <label for="humedad_ambiente">Humedad del Ambiente <small>(%)</small></label>
+                <input style="text-align:center;" class="form-control" id="humedad_ambiente">
+            </div>
+            <div id="humedad_suelo_div" class="form-group col-xs-6 col-md-3">
+                <label for="humedad_suelo">Humedad del Suelo <small>(%)</small></label>
+                <input style="text-align:center;" class="form-control" id="humedad_suelo">
+            </div>
+            <div id="luz_div" class="form-group col-xs-6 col-md-3">
+                <label for="luz">Luminosidad <small>(luxes)</small></label>
+                <input style="text-align:center;" class="form-control" id="luz">
+            </div>
+            <div id="temperatura_div" class="form-group col-xs-6 col-md-3">
+                <label for="temperatura">Temperatura <small>(°C)</small></label>
+                <input style="text-align:center;" class="form-control" id="temperatura">
+            </div>
+            <div id="status_bomba_div" class="form-group col-xs-6 col-md-3">
+                <label for="status_bomba">Estado de la Bomba <small>(On/Off)</small></label>
+                <input style="text-align:center;" class="form-control" id="status_bomba">
+            </div>
+            <div id="status_calentador_div" class="form-group col-xs-6 col-md-3">
+                <label for="status_calentador">Estado del Calentador <small>(On/Off)</small></label>
+                <input style="text-align:center;" class="form-control" id="status_calentador">
+            </div>
+            <div id="status_ventilador_div" class="form-group col-xs-6 col-md-3">
+                <label for="status_ventilador">Estado del Ventilador <small>(On/Off)</small></label>
+                <input style="text-align:center;" class="form-control" id="status_ventilador">
+            </div>
+        </div>
+        <br>
+         <div class="row">
+            <div id="modo_bomba_div" class="col-xs-12 col-md-4" style="text-align:center;">
+                <label style="display: block">Modo de la Bomba</label>
+                <button id="modo_bomba_on" style="margin: 0 auto;" type="button" class="btn btn-default">Encendido</button>
+                <button id="modo_bomba_off" style="margin: 0 auto;" type="button" class="btn btn-default">Apagada</button>
+                <button id="modo_bomba_auto" style="margin: 0 auto;" type="button" class="btn btn-default">Modo Automático</button>
+            </div>
+            <div id="modo_calentador_div" class="col-xs-12 col-md-4" style="text-align:center;">
+                <label style="display: block">Modo del Calentador</label>
+                <button id="modo_calentador_on" style="margin: 0 auto;" type="button" class="btn btn-default">Encendido</button>
+                <button id="modo_calentador_off" style="margin: 0 auto;" type="button" class="btn btn-default">Apagado</button>
+                <button id="modo_calentador_auto" style="margin: 0 auto;" type="button" class="btn btn-default">Modo Automático</button>
+            </div>
+            <div id="modo_ventilador_div" class="col-xs-12 col-md-4" style="text-align:center;">
+                <label style="display: block">Modo del Ventilador</label>
+                <button id="modo_ventilador_on" style="margin: 0 auto;" type="button" class="btn btn-default">Encendido</button>
+                <button id="modo_ventilador_off" style="margin: 0 auto;" type="button" class="btn btn-default">Apagado</button>
+                <button id="modo_ventilador_auto" style="margin: 0 auto;" type="button" class="btn btn-default">Modo Automático</button>
+            </div>
+        </div>
+
+        <div class="row"><br>
+            <h2 align="center">Histórico de Valores<br>
+                <small><i>Aquí puede observar cómo se ha ido desarrollando el control automático en el invernadero</i></small></h2>
+            <h2 align="center"></h2>
+        </div>
+        <!-- Page Content -->
+        <div class="hidden" id="xivelyContent" style="position: relative;">
+            <a href="https://github.com/xively/channel-viz" class="hide-for-medium hide-for-small"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+            <div id="welcome">
+                <div class="row">
+                    <div class="large-1 columns">&nbsp;</div>
+                    <div class="large-10 columns text-center">
+                        <br/><br/><br/><br/><br/><br/><br/>
+                        <h1 class="subheader" style="text-align: center;">Welcome to Xively!</h1>
+                        <p>This page is an example of just one of many ways you can visualise your data on Xively.<br/>It was created with open-source tools, and reads data from Xively with the Xively JavaScript library.</p>
+                        <p>Read the tutorial <i>(comming soon)</i> on how to make and customise your own.</p>
+                    </div>
+                    <div class="large-1 columns">&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="large-12 columns">
+                        <br/><br/><br/><br/><hr/><br/><br/><br/><br/>
+                        <div class="row">
+                            <div class="large-4 columns">
+                                <div class="hero panel">
+                                    <p style="font-size: 14px;">To use this page, enter a Master API Key from your Xively account, and a list of the Feeds that you would like to display, into the forms above. You can view multiple Feeds by separating them with a comma, and select individual channels with an exclamation mark.</p>
+                                </div>
+                            </div>
+                            <div class="large-8 columns">
+                                <h4 class="subheader">Examples</h4>
+                                <hr/>
+                                <div class="row">
+                                    <div class="large-4 columns">
+                                        <strong style="text-transform: uppercase;">Multiple Feeds</strong>
+                                    </div>
+                                    <div class="large-8 columns">
+                                        <pre><em>61916,61916</em></pre>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="row">
+                                    <div class="large-4 columns">
+                                        <strong style="text-transform: uppercase;">Individual Channels</strong><br/>
+                                        <small>separate with exclamation marks</small>
+                                    </div>
+                                    <div class="large-8 columns">
+                                        <pre><em>61916!random5!random3600</em></pre><br/>
+                                        <pre><em>61916!random5,61916!random3600</em></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br/><br/><br/><br/><hr/><br/><br/><br/><br/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-2 columns">&nbsp;</div>
+                    <div class="large-8 columns">
+                        <h5 class="subheader text-center">To begin visualizing data, enter your Xively Master API key above!</h5>
+                        <br/><br/><br/><br/><br/><br/><br/>
+                    </div>
+                    <div class="large-2 columns">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+        <!-- Form -->
+        <div class="hidden" id="form" style="background: #F0F0F0; border-bottom: 1px solid #CCC; padding: 25px; padding-bottom: 15px;">
+            <div class="row">
+                <div class="large-5 columns">
+                    <div class="row collapse">
+                        <div class="small-3 columns">
+                            <span class="prefix">API Key</span>
+                        </div>
+                        <div class="small-9 columns">
+                            <input type="text" placeholder="Valid Master API Key" id="apiKeyInput">
+                        </div>
+                    </div>
+                </div>
+                <div class="large-5 columns">
+                    <div class="row collapse">
+                        <div class="small-3 columns">
+                            <span class="prefix">Feed ID's</span>
+                        </div>
+                        <div class="small-9 columns">
+                            <input type="text" placeholder="Comma separated" id="feedsInput">
+                        </div>
+                    </div>
+                </div>
+                <div class="large-2 columns">
+                    <a id="setFeeds" href="#" data-reveal-id="secondModal" class="secondary button small expand">
+                        Visualize &raquo;
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="invalidApiKey" class="hidden">
+            <div class="row">
+                <div class="large-2 columns">&nbsp;</div>
+                <div class="large-8 columns">
+                    <br/><br/><br/>
+                    <h1 class="subheader" style="text-align: center;">Uh oh!</h1>
+                    <h2 class="subheader" style="text-align: center;">Your API key is invalid!</h2>
+                    <p>Please try again or generate a new key on Xively. It is important to keep in mind that this API key must be a global API key in order to work in this example. Using an application-specific API key will cause this example to malfunction.</p>
+
+                    <a href="#" data-reveal-id="exampleModal" class="openStart radius secondary button expand">Ready When You Are...</a>
+                    <br/><br/><br/>
+                </div>
+                <div class="large-2 columns">&nbsp;</div>
+            </div>
+        </div>
+        <div id="validApiKey" class="hidden">
+            <div class="row">
+                <div class="large-2 columns">&nbsp;</div>
+                <div class="large-8 columns">
+                    <br/><br/><br/>
+                    <br/><br/><br/>
+                    <h1 class="subheader" style="text-align: center;">Connected to Xively!</h1>
+                    <h5 class="subheader text-center">To begin visualizing data, enter your Xively feed information above...</h5>
+                </div>
+                <div class="large-2 columns">&nbsp;</div>
+            </div>
+            <div class="row">
+                <div class="large-12 columns">
+                    <br/><br/><br/><br/><hr/><br/><br/><br/><br/>
+                    <div class="row">
+                        <div class="large-4 columns">
+                            <div class="hero panel">
+                                <p style="font-size: 14px;">To use this page, enter a Master API Key from your Xively account, and a list of the Feeds that you would like to display, into the forms above. You can view multiple Feeds by separating them with a comma, and select individual channels with an exclamation mark.</p>
+                            </div>
+                        </div>
+                        <div class="large-8 columns">
+                            <h4 class="subheader">Examples</h4>
+                            <hr/>
+                            <div class="row">
+                                <div class="large-4 columns">
+                                    <strong style="text-transform: uppercase;">Multiple Feeds</strong>
+                                </div>
+                                <div class="large-8 columns">
+                                    <pre><em>61916,61916</em></pre>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="row">
+                                <div class="large-4 columns">
+                                    <strong style="text-transform: uppercase;">Individual Channels</strong><br/>
+                                    <small>separate with exclamation marks</small>
+                                </div>
+                                <div class="large-8 columns">
+                                    <pre><em>61916!random5!random3600</em></pre><br/>
+                                    <pre><em>61916!random5,61916!random3600</em></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/><br/><br/><br/>
+                    <br/><br/><br/><br/>
+                    <br/><br/><br/><br/>
+                </div>
+            </div>
+        </div>
+
+        <div id="feeds">
+            <div class="feed hidden" id="exampleFeedNotFound" style="line-height: 25px; padding-top: 25px;">
+                <div class="row title">
+                    <div class="large-12 columns">
+                        <h2 class="subheader value">Loading Feed Data...</h2>
+
+                        <div class="alert alert-box no-info">
+                            Sorry, this feed could not be found.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="feed hidden" id="exampleFeed" style="line-height: 25px; padding-top: 25px;">
+                <div class="row title hidden">
+                    <div class="large-12 columns">
+                        <h2 class="subheader value">Loading Feed Data...</h2>
+                    </div>
+                </div>
+                <div class="hidden row">
+                    <div class="large-7 columns">
+                        <h4 class="subheader">Meta</h4>
+                        <div class="row id">
+                            <div class="large-4 columns"><strong>ID</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row description">
+                            <div class="large-4 columns"><strong>Description</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row link">
+                            <div class="large-4 columns"><strong>Link</strong></div>
+                            <div class="large-8 columns value"><a href="#">View on Xively &raquo;</a></div>
+                        </div>
+                        <div class="row creator">
+                            <div class="large-4 columns"><strong>Creator</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row updated">
+                            <div class="large-4 columns"><strong>Updated</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row tags">
+                            <div class="large-4 columns"><strong>Tags</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                    </div>
+                    <div class="large-5 columns">
+                        <h4 class="subheader">Location</h4>
+                        <div class="alert alert-box hidden no-location">
+                            Sorry, no location information is available.
+                        </div>
+                        <div class="row location-name">
+                            <div class="large-4 columns"><strong>Name</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row latitude">
+                            <div class="large-4 columns"><strong>Latitude</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row longitude">
+                            <div class="large-4 columns"><strong>Longitude</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row elevation">
+                            <div class="large-4 columns"><strong>Elevation</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row disposition">
+                            <div class="large-4 columns"><strong>Disposition</strong></div>
+                            <div class="large-8 columns value"></div>
+                        </div>
+                        <div class="row map">
+                            <div class="large-4 columns"><strong>Map</strong></div>
+                            <div class="large-8 columns value"><a href="#">View on Google Maps &raquo;</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-12 columns">
+                        <div class="button-group" style="float: right;">
+                            <a href="#" class="small button secondary duration-hour">6 Horas</a>
+                            <a href="#" class="small button secondary duration-day">Diario</a>
+                            <a href="#" class="small button secondary duration-week">Semanal</a>
+                            <a href="#" class="small button secondary duration-month">Mensual</a>
+                            <a href="#" class="small button secondary duration-90">90 Días</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-12 columns">
+                        <div class="datastreams" style="padding-bottom: 15px;">
+                            <div class="datastream hidden">
+                                <hr/>
+                                <div class="row">
+                                    <div class="large-9 columns datastream-name subheader" style="font-size: 24px;">
+                                        Datastream Name
+                                    </div>
+                                    <div class="large-3 columns datastream-value subheader" style="font-size: 24px; text-align: right;">
+                                        420
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="large-12 columns">
+                                        <div class="graphWrapper" style="margin-top: 15px; padding: 10px; text-align: center;">
+                                            <div class="graph" style="width: 600px; margin: auto;"></div>
+                                        </div>
+                                        <div class="slider" style="width: 600px; height: 15px; margin: auto;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background: #0D1B23;">
+            <div style="padding: 15px;">
+                <div class="row">
+                    <div class="large-8 columns" style="color: rgb(81, 98, 111); padding-top: 10px; padding-bottom: 10px;">
+                        <small>
+                            Este sitio fue desarrollado por los integrantes del Grupo Invernatic.
+                        </small>
+                    </div>
+                    <div class="large-4 columns" style="color: rgb(81, 98, 111); padding-top: 10px; padding-bottom: 10px;">
+                        <small>
+                            <a style="color: rgb(81, 98, 111);" href="https://github.com/xively/channel-viz/blob/master/LICENSE.md">Esta biblioteca es de Código Abierto (BSD-3 Clause).</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="loadingData" class="reveal-modal small text-center">
+            <br/><br/><h2 class="subheader">Loading...</h2><br/><br/>
+        </div>
+        <!--
+        <script>
+            document.write('<script src=' +
+                    ('__proto__' in {} ? 'js/zepto' : 'js/jquery') +
+                    '.js><\/script>')
+        </script>
+        -->
+        <script src="js/foundation.min.js"></script>
+        <script src="js/follows.js"></script>
+
+        <script>
+            var websocket;
+            var wsUri = "ws://api.xively.com:8080";
+            var headerSubscribe = {
+                "method": "subscribe",
+                "resource": "/feeds/1439966730",
+                "headers": {"X-ApiKey": "RYVGffiyqnXMTAMk8GThDKcOvg4AivnKRhabJ47tDSGWeoAQ"},
+                "token": "subscribe"
+            };
+            var headerFirstTime = {
+                "method": "get",
+                "resource": "/feeds/1439966730",
+                "headers": {"X-ApiKey": "RYVGffiyqnXMTAMk8GThDKcOvg4AivnKRhabJ47tDSGWeoAQ"},
+                "token": "primeravez"
+            };
+            /*
+            var llamadaAjax = null;
+            var botonLlamado = null;
+            var jsonControles = {};
+            var controles = {
+                modo_bomba: 0,
+                modo_calentador: 1,
+                modo_ventilador: 3
+            };
+            var modos = {
+                auto: 0,
+                on: 1,
+                off: 3
+            };
+            var valor;
+            for (var control in controles) {
+                for (var modo in modos) {
+                    jsonControles[control + "_" + modo] = {
+                        url: "https://api.xively.com/v2/feeds/1439966730.json",
+                        method: "put",
+                        headers: {"X-ApiKey": "RYVGffiyqnXMTAMk8GThDKcOvg4AivnKRhabJ47tDSGWeoAQ"},
+                        token: control + "_" + modo,
+                        data: JSON.stringify({
+                            "version": "1.0.0",
+                            "datastreams": [{
+                                    "id": control,
+                                    "current_value": modos[modo]
+                                }
+                            ]
+                        })
+                    };
+                    $("#" + control + "_" + modo).on('click', function () {
+                        if (llamadaAjax) {
+                            clearTimeout(llamadaAjax);
+                        }
+                        botonLlamado = this.id;
+                        llamadaAjax = setTimeout(function () {
+                            $.ajax(jsonControles[botonLlamado]);
+                            llamadaAjax = null;
+                            var botones = ["modo_bomba_auto",
+                                "modo_bomba_on",
+                                "modo_bomba_off",
+                                "modo_calentador_auto",
+                                "modo_calentador_on",
+                                "modo_calentador_off",
+                                "modo_ventilador_auto",
+                                "modo_ventilador_on",
+                                "modo_ventilador_off"];
+                            var colores = ["btn-primary", "btn-success", "btn-danger"];
+                            var pos = botones.indexOf(botonLlamado);
+                            if (pos < 3) {
+                                $("#" + botones[0]).removeClass("btn-primary btn-default").addClass("btn-default");
+                                $("#" + botones[1]).removeClass("btn-success btn-default").addClass("btn-default");
+                                $("#" + botones[2]).removeClass("btn-danger btn-default").addClass("btn-default");
+                            } else if (pos < 6) {
+                                $("#" + botones[3]).removeClass("btn-primary btn-default").addClass("btn-default");
+                                $("#" + botones[4]).removeClass("btn-success btn-default").addClass("btn-default");
+                                $("#" + botones[5]).removeClass("btn-danger btn-default").addClass("btn-default");
+                            } else {
+                                $("#" + botones[6]).removeClass("btn-primary btn-default").addClass("btn-default");
+                                $("#" + botones[7]).removeClass("btn-success btn-default").addClass("btn-default");
+                                $("#" + botones[8]).removeClass("btn-danger btn-default").addClass("btn-default");
+                            }
+                            $("#" + botones[pos]).addClass(colores[pos % 3]);
+                        }, 1000);
+                    });
+                }
+            }
+            */
+            function init()
+            {
+                websocket = new WebSocket(wsUri);
+                websocket.onopen = function (evt) {
+                    onOpen(evt);
+                };
+                websocket.onclose = function (evt) {
+                    onClose(evt);
+                };
+                websocket.onmessage = function (evt) {
+                    onMessage(evt);
+                };
+                websocket.onerror = function (evt) {
+                    onError(evt);
+                };
+            }
+            function onOpen(evt)
+            {
+                websocket.send(JSON.stringify(headerSubscribe));
+            }
+
+            function onClose(evt)
+            {
+                alert("Desconectado");
+            }
+
+            function onMessage(evt)
+            {
+                var resp = JSON.parse(evt.data);
+                if (resp.status == 200) {
+                    switch (resp.token) {
+                        case "subscribe":
+                            alert("Conectado al servidor!")
+                            websocket.send(JSON.stringify(headerFirstTime));
+                            break;
+                        case "primeravez":
+                            lista = resp.body.datastreams;
+                            for (var i in lista) {
+                                setValue(lista[i].id, lista[i].current_value);
+                            }
+                            break;
+                        default:
+                            console.log(resp);
+                    }
+                } // Se actualizan los textbox
+                else if (resp.token == "subscribe") {
+                    lista = resp.body.datastreams;
+                    for (var i in lista) {
+                        setValue(lista[i].id, lista[i].current_value);
+                    }
+                }
+                else {
+                    alert("Hay inconvenientes para traer los datos. Revise su conexion a Internet...");
+                }
+            }
+
+            function onError(evt)
+            {
+                alert("Error");
+            }
+
+            function setValue(id, value) {
+                if (id == "caudal") {
+                    $("#" + id).val(value);
+                }
+                if (id == "humedad_ambiente") {
+                    $("#" + id).val(value);
+                }
+                if (id == "humedad_suelo") {
+                    $("#" + id).val(value);
+                }
+                if (id == "luz") {
+                    $("#" + id).val(value);
+                }
+                if (id == "temperatura") {
+                    $("#" + id).val(value);
+                }
+                if (id == "status_bomba" || id == "status_calentador" || id == "status_ventilador") {
+                    if (value == '1') {
+                        $("#" + id).val("Encendido");
+                    } else {
+                        $("#" + id).val("Apagado");
+                    }
+                }
+                if (id == "modo_bomba" || id == "modo_calentador" || id == "modo_ventilador") {
+                    switch (parseInt(value)) {
+                        case 0:
+                            $("#" + id + "_auto").removeClass("btn-default btn-primary").addClass("btn-primary")
+                            $("#" + id + "_on").removeClass("btn-success btn-default").addClass("btn-default")
+                            $("#" + id + "_off").removeClass("btn-danger btn-default").addClass("btn-default")
+                            break;
+                        case 1:
+                            $("#" + id + "_auto").removeClass("btn-primary btn-default").addClass("btn-default")
+                            $("#" + id + "_on").removeClass("btn-default btn-success").addClass("btn-success")
+                            $("#" + id + "_off").removeClass("btn-danger btn-default").addClass("btn-default")
+                            break;
+                        default:
+                            $("#" + id + "_auto").removeClass("btn-primary btn-default").addClass("btn-default")
+                            $("#" + id + "_on").removeClass("btn-success btn-default").addClass("btn-default")
+                            $("#" + id + "_off").removeClass("btn-default btn-danger").addClass("btn-danger")
+                    }
+                }
+            }
+
+            window.addEventListener("load", init, false);
+        </script>
+    </body>
+</html>
