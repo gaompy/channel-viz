@@ -448,14 +448,14 @@ and open the template in the editor.
             var wsUri = "ws://api.xively.com:8080";
             var headerSubscribe = {
                 "method": "subscribe",
-                "resource": "/feeds/1439966730",
-                "headers": {"X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"},
+                "resource": "/feeds/730668717",
+                "headers": {"X-ApiKey": "p7CFJfKDG7Bmk9DHuU6k2xcJJNItWTtHfyel2zbF6tiucj2z"},
                 "token": "subscribe"
             };
             var headerFirstTime = {
                 "method": "get",
-                "resource": "/feeds/1439966730",
-                "headers": {"X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"},
+                "resource": "/feeds/730668717",
+                "headers": {"X-ApiKey": "p7CFJfKDG7Bmk9DHuU6k2xcJJNItWTtHfyel2zbF6tiucj2z"},
                 "token": "primeravez"
             };
             var timeoutLlamadaAjax = {
@@ -478,9 +478,9 @@ and open the template in the editor.
             for (var control in controles) {
                 for (var modo in modos) {
                     jsonControles[control + "_" + modo] = {
-                        url: "https://api.xively.com/v2/feeds/1439966730.json",
+                        url: "https://api.xively.com/v2/feeds/730668717.json",
                         method: "put",
-                        headers: {"X-ApiKey": "QKqFMDVPCnskjPSQrIrjeDJ0I8P0YRFsh0HA0BRixkNVrcqL"},
+                        headers: {"X-ApiKey": "p7CFJfKDG7Bmk9DHuU6k2xcJJNItWTtHfyel2zbF6tiucj2z"},
                         token: control + "_" + modo,
                         data: JSON.stringify({
                             "version": "1.0.0",
